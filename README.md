@@ -1,4 +1,4 @@
-# neofetch
+# neurofetch
 
 Simple personal script to install and set up [neofetch](https://github.com/dylanaraps/neofetch) on Ubuntu or Debian.  
 Part of my journey learning Git and VS Code ˆˆ
