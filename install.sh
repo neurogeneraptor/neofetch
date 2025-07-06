@@ -17,8 +17,10 @@ if ! command -v neofetch &>/dev/null; then
         SUDO=""
     fi 
 
-    # Detect package manager
     INSTALL_FROM_PM=false
+    INSTALL_FROM_URL=false
+
+    # Detect package manager
     if command -v apt &>/dev/null; then
         PM="$SUDO apt install -y"
         INSTALL_FROM_PM=true
@@ -26,33 +28,48 @@ if ! command -v neofetch &>/dev/null; then
         PM="$SUDO pacman -S --noconfirm"
         INSTALL_FROM_PM=true
     elif command -v brew &>/dev/null; then
-        PM="brew install"  # brew не требует sudo
+        PM="brew install"
         INSTALL_FROM_PM=true
     else
         echo "No known package manager found. Will try installing from GitHub..."
+        INSTALL_FROM_URL=true
     fi
 
-    # Try package manager if available
+    # Try package manager
     if [[ "$INSTALL_FROM_PM" == true ]]; then
         if $PM neofetch; then
             echo "Neofetch installed via package manager."
         else
-            echo "Package manager failed. Trying GitHub..."
-            INSTALL_FROM_GITHUB=true
+            echo "Package manager failed. Will try installing from GitHub..."
+            INSTALL_FROM_URL=true
         fi
-    else
-        INSTALL_FROM_GITHUB=true
     fi
 
-    # Try GitHub installation
-    if [[ "$INSTALL_FROM_GITHUB" == true ]]; then
-        if git clone https://github.com/dylanaraps/neofetch "$HOME/neofetch-git" \
-            && cd "$HOME/neofetch-git" \
-            && $SUDO make install; then
-            echo "Neofetch installed from GitHub."
+    # Try GitHub (raw script) install
+    if [[ "$INSTALL_FROM_URL" == true ]]; then
+        INSTALL_DIR="$HOME/.local/bin"
+        mkdir -p "$INSTALL_DIR"
+        INSTALL_PATH="$INSTALL_DIR/neofetch"
+
+        if command -v curl &>/dev/null; then
+            curl -fsSL https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch -o "$INSTALL_PATH"
+        elif command -v wget &>/dev/null; then
+            wget -q https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch -O "$INSTALL_PATH"
         else
-            echo "Both package manager and GitHub installation failed. Your system sucks. Bye!"
+            echo "Neither curl nor wget found. Can't install neofetch. Bye!"
             exit 1
+        fi
+
+        chmod +x "$INSTALL_PATH"
+        echo "Neofetch installed to $INSTALL_PATH"
+
+        # Add to PATH if not already present
+        if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
+            if [ -f ~/.bashrc ]; then
+                echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> ~/.bashrc
+            elif [ -f ~/.zshrc ]; then
+                echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> ~/.zshrc
+            fi
         fi
     fi
 
@@ -85,7 +102,7 @@ fi
 # Final output
 echo "Installation complete successfully!"
 sleep 1
-echo "Now run:  source ~/.bashrc   or   source ~/.zshrc   or open new terminal"
+echo -e "Now run: \e[32msource ~/.bashrc\e[0m or \e[36msource ~/.zshrc\e[0m or open new terminal"
 sleep 1
-echo 'After that you can use "fuckit" alias to combine "clear" and "neofetch" commands'
+echo -e 'After that you can use \e[33m"fuckit"\e[0m alias to combine "clear" and "neofetch" commands'
 exit 0
