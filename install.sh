@@ -100,9 +100,9 @@ if ! grep -q "alias fuckit=" "$RC"; then
 fi
 
 # Final output
-echo "Installation complete successfully!"
+echo "Installation complete successfully"
 sleep 1
-echo -e "Now run: \e[32msource ~/.bashrc\e[0m or \e[36msource ~/.zshrc\e[0m or open new terminal"
+printf "Now run: \033[32msource ~/.bashrc\033[0m or \033[36msource ~/.zshrc\033[0m or open new terminal\n"
 sleep 1
-echo -e 'After that you can use \e[33m"fuckit"\e[0m alias to combine "clear" and "neofetch" commands'
-exit 0
+printf 'After that you can use \033[33m"fuckit"\033[0m alias to combine "clear" and "neofetch" commands\n'
+
