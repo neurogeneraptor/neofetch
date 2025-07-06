@@ -32,10 +32,16 @@ if ! command -v neofetch &>/dev/null; then
     fi
 
     # Install neofetch
-    if ! $SUDO $PM neofetch; then
-        echo "Installation failed. Unexpected error. I'm sorry. Bye!"
-        exit 1
+      if ! $SUDO $PM neofetch; then
+        echo "Package manager failed. Trying to install from GitHub..."
+        if git clone https://github.com/dylanaraps/neofetch "$HOME/neofetch-git" && cd "$HOME/neofetch-git" && $SUDO make install; then
+            echo "Neofetch installed from GitHub."
+        else
+            echo "Both package manager and GitHub installation failed. Bye!"
+            exit 1
+        fi
     fi
+    
 else
     echo "Neofetch already installed"
 fi
