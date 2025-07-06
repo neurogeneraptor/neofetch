@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Abort if script is run via sudo (protects root's rc file)
+if [[ "$EUID" -eq 0 && -n "$SUDO_USER" ]]; then
+    echo "Don't run this script with sudo. It will fuck your root's rc file."
+    exit 1
+fi
+
 # Check if neofetch is installed
 if ! command -v neofetch &>/dev/null; then
     echo "Neofetch not found. Attempting to install..."
