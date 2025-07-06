@@ -67,12 +67,3 @@ echo "Installation complete successfully!"
 sleep 1
 echo 'Use "fuckit" alias to combine "clear" and "neofetch" commands'
 exit 0
-
-
-
-
-
-if [[ "$EUID" -eq 0 && -n "$SUDO_USER" ]]; then
-    echo "Don't run this script with sudo. It will fuck your root's rc file."
-    exit 1
-fi
