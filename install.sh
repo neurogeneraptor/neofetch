@@ -17,31 +17,45 @@ if ! command -v neofetch &>/dev/null; then
         SUDO=""
     fi 
 
-    # Detect package manager (apt/pacman/brew)
+    # Detect package manager
+    INSTALL_FROM_PM=false
     if command -v apt &>/dev/null; then
-        PM="apt install -y"
+        PM="$SUDO apt install -y"
+        INSTALL_FROM_PM=true
     elif command -v pacman &>/dev/null; then
-        PM="pacman -S --noconfirm"
+        PM="$SUDO pacman -S --noconfirm"
+        INSTALL_FROM_PM=true
     elif command -v brew &>/dev/null; then
-        PM="brew install"
+        PM="brew install"  # brew не требует sudo
+        INSTALL_FROM_PM=true
     else
-        echo "You have no apt, pacman or brew, so your system sucks."
-        sleep 1
-        echo "My script doesn't. Bye!"
-        exit 1  
+        echo "No known package manager found. Will try installing from GitHub..."
     fi
 
-    # Install neofetch
-      if ! $SUDO $PM neofetch; then
-        echo "Package manager failed. Trying to install from GitHub..."
-        if git clone https://github.com/dylanaraps/neofetch "$HOME/neofetch-git" && cd "$HOME/neofetch-git" && $SUDO make install; then
+    # Try package manager if available
+    if [[ "$INSTALL_FROM_PM" == true ]]; then
+        if $PM neofetch; then
+            echo "Neofetch installed via package manager."
+        else
+            echo "Package manager failed. Trying GitHub..."
+            INSTALL_FROM_GITHUB=true
+        fi
+    else
+        INSTALL_FROM_GITHUB=true
+    fi
+
+    # Try GitHub installation
+    if [[ "$INSTALL_FROM_GITHUB" == true ]]; then
+        if git clone https://github.com/dylanaraps/neofetch "$HOME/neofetch-git" \
+            && cd "$HOME/neofetch-git" \
+            && $SUDO make install; then
             echo "Neofetch installed from GitHub."
         else
-            echo "Both package manager and GitHub installation failed. Bye!"
+            echo "Both package manager and GitHub installation failed. Your system sucks. Bye!"
             exit 1
         fi
     fi
-    
+
 else
     echo "Neofetch already installed"
 fi
