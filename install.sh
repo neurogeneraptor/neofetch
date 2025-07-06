@@ -65,7 +65,7 @@ fi
 # Final output
 echo "Installation complete successfully!"
 sleep 1
-echo -e "Now run: \e[32msource ~/.bashrc\e[0m or \e[36msource ~/.zshrc\e[0m # or open new terminal"
+echo -e "Now run:  source ~/.bashrc   or   source ~/.zshrc   or open new terminal"
 sleep 1
-echo -e 'After that you can use \e[33mfuckit\e[0m alias to combine "clear" and "neofetch" commands'
+echo -e 'After that you can use  fuckit  alias to combine "clear" and "neofetch" commands'
 exit 0
