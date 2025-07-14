@@ -32,15 +32,18 @@ Nothing fancy. But it works.
 
 Using `curl`:
 
+```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/neurogeneraptor/neurofetch/main/install.sh)
-
+```
 
 Using `wget`
 
+```bash
 wget -qO- https://raw.githubusercontent.com/neurogeneraptor/neurofetch/main/install.sh | bash
-
+```
 
 Or any way you want...
+
 
 
 
